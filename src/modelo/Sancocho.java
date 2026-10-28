@@ -1,64 +1,64 @@
 package modelo;
 
-public class Sancocho implements Identificable, Costeable {
-    public static final double COSTO_GAS_POR_MINUTO = 100;
-    public static final double MARGEN_GANANCIA = 0.60;
-
+public class Sancocho implements Costeable {
     private final String codigo;
     private final String nombre;
     private final Olla olla;
-    private final int porcionesTotales;
-    private int porcionesDisponibles;
+    private final int porciones;
 
     public Sancocho(String codigo, String nombre, Olla olla, int porciones) {
-        if (porciones <= 0) {
-            throw new IllegalArgumentException("Las porciones deben ser mayores que 0");
-        }
         this.codigo = codigo;
         this.nombre = nombre;
         this.olla = olla;
-        this.porcionesTotales = porciones;
-        this.porcionesDisponibles = porciones;
-    }
-
-    @Override
-    public String getCodigo() { return codigo; }
-    public String getNombre() { return nombre; }
-    public Olla getOlla() { return olla; }
-    public int getPorcionesTotales() { return porcionesTotales; }
-    public int getPorcionesDisponibles() { return porcionesDisponibles; }
-
-    @Override
-    public double calcularCosto() {
-        return olla.calcularCostoIngredientes() + olla.calcularTiempoCoccion() * COSTO_GAS_POR_MINUTO;
-    }
-
-    public double calcularPrecioPorcion() {
-        return calcularCosto() / porcionesTotales * (1 + MARGEN_GANANCIA);
+        this.porciones = porciones;
     }
 
     public boolean estaCompleto() {
-        return olla.contarPorCategoria("Proteína") >= 1
-                && olla.contarPorCategoria("Tubérculo") >= 1
-                && olla.contarPorCategoria("Condimento") >= 1;
+        boolean tieneProteina = false;
+        boolean tieneTuberculo = false;
+        boolean tieneVerdura = false;
+        boolean tieneCondimento = false;
+
+        for (Ingrediente i : olla.getIngredientes()) {
+            if (i instanceof Proteina) tieneProteina = true;
+            if (i instanceof Tuberculo) tieneTuberculo = true;
+            if (i instanceof Verdura) tieneVerdura = true;
+            if (i instanceof Condimento) tieneCondimento = true;
+        }
+        return tieneProteina && tieneTuberculo && tieneVerdura && tieneCondimento;
     }
 
     public boolean esTrifasico() {
-        return olla.contarPorCategoria("Proteína") >= 3;
+        int carnes = 0;
+        for (Ingrediente i : olla.getIngredientes()) {
+            if (i instanceof Proteina) carnes++;
+        }
+        return carnes >= 3;
     }
 
-    public boolean servir(int cantidad) {
-        if (cantidad <= 0 || cantidad > porcionesDisponibles) {
-            return false;
-        }
-        porcionesDisponibles -= cantidad;
-        return true;
+    public String obtenerFicha() {
+        String estado = estaCompleto() ? "✅ Completo" : "❌ Incompleto";
+        return nombre + " (" + codigo + ") — " + porciones + " porciones — " + estado;
+    }
+
+    public int getPorcionesDisponibles() {
+        return porciones;
+    }
+
+    public String getCodigo() {
+        return codigo;
     }
 
     @Override
-    public String obtenerFicha() {
-        return "Sancocho [" + codigo + "] " + nombre + " - " + porcionesTotales + " porciones, "
-                + olla.calcularTiempoCoccion() + " min, costo $" + String.format("%.0f", calcularCosto())
-                + ", plato $" + String.format("%.0f", calcularPrecioPorcion());
+    public double calcularCosto() {
+        return porciones * 15000;
+    }
+
+    public boolean servir(int cantidad) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getNombre() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

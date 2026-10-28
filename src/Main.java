@@ -118,14 +118,14 @@ public class Main {
         Proteina buscada = (Proteina) ollaGallina.buscarPorCodigo("PRO-001");
         System.out.println("Buscar PRO-001: " + (buscada != null ? buscada.getNombre() + " (" + buscada.getTipo() + ")" : "no encontrado"));
 
-        Identificable conCodigo = trifasico;
+        Identificable conCodigo = (Identificable) trifasico;
         System.out.println("Como Identificable: " + conCodigo.getCodigo());
 
         ArrayList<Costeable> cosasConPrecio = new ArrayList<>();
         cosasConPrecio.add(papa);
         cosasConPrecio.add(deGallina);
         cosasConPrecio.add(arroz);
-        cosasConPrecio.add(mesa1);
+        cosasConPrecio.add((Costeable) mesa1);
 
         for (Costeable c : cosasConPrecio) {
             System.out.printf("%s cuesta $%.0f%n", c.getClass().getSimpleName(), c.calcularCosto());
