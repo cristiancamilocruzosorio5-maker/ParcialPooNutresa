@@ -25,14 +25,13 @@ public class Pedido implements Costeable {
         }
     }
 
-    /** CADA plato lleva sus acompañamientos: (precio del plato + acompañamientos) × cantidad. */
     @Override
     public double calcularCosto() {
-        double sumaAcompanamientos = 0;
+        double sumaAcomp = 0;
         for (Acompanamiento a : acompanamientos) {
-            sumaAcompanamientos += a.getPrecio;
+            sumaAcomp += a.getPrecio();
         }
-        return sancocho.calcularPrecioPorcion() * cantidad + sumaAcompanamientos;
+        return (sancocho.calcularPrecioPorcion() + sumaAcomp) * cantidad;
     }
 
     public String obtenerResumen() {
